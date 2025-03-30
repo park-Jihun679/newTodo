@@ -1,13 +1,13 @@
 <script setup>
-defineProps({
-  filter,
+import { ref } from 'vue'
+const emits = defineEmits(['change-filter'])
+const props = defineProps({
+  filterOption: String,
 })
 const filterOptions = ['all', 'active', 'completed']
 
-const emits = defineEmits(['change-filter'])
-
-const changeFilter = () => {
-  emits('change-filter', filter)
+const changeFilter = (option) => {
+  emits('change-filter', option)
 }
 </script>
 
@@ -16,8 +16,8 @@ const changeFilter = () => {
     <button
       v-for="(option, index) in filterOptions"
       :key="index"
-      :class="filter === option ? 'active' : ''"
-      @click="changeFilter"
+      :class="filterOption === option ? 'active' : ''"
+      @click="changeFilter(option)"
     >
       {{ option === 'all' ? '전체' : option === 'active' ? '미완료' : '완료' }}
     </button>

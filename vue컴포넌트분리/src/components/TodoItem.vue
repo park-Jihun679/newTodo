@@ -5,8 +5,16 @@ const props = defineProps({
     require: true,
   },
 })
+const emits = defineEmits(['toggle-completed', 'remove-todo'])
 
-const emits = defineEmits(['toggle-completed'])
+const toggleCompleted = (e) => {
+  let checked = e.target.checked
+  emits('toggle-completed', { id: props.todo.id, completed: checked })
+}
+
+const removeTodo = (id) => {
+  emits('remove-todo', id)
+}
 </script>
 
 <template>
@@ -14,11 +22,11 @@ const emits = defineEmits(['toggle-completed'])
     <i class="fa fa-paper-plane" aria-hidden="true"></i>
     <p>할 일을 입력해 주세요</p>
   </li> -->
-  <li :class="{ completed: todo.completed }" @click="emits('toggle-completed', todo.id)">
+  <li :class="{ completed: todo.completed }" @click="toggleCompleted">
     <input type="checkbox" />
     <span>{{ todo.text }}</span>
     <time>{{ todo.createdAt }}</time>
-    <i class="fa fa-trash" @click.stop=""></i>
+    <i class="fa fa-trash" @click.stop="removeTodo(todo.id)"></i>
   </li>
 </template>
 

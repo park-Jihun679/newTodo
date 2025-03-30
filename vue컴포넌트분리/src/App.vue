@@ -11,7 +11,7 @@ onMounted(() => {
 })
 
 const todos = ref([])
-const filterOption = ref('')
+const filterOption = ref('all')
 
 const addTodo = (text) => {
   todos.value.push({
@@ -20,11 +20,13 @@ const addTodo = (text) => {
     completed: false,
     createdAt: formatDate(new Date()),
   })
+  saveTodos()
 }
 
-const toggleCompleted = (id) => {
-  const todo = todos.value.find((todo) => todo.item === id)
-  todo.completed = !todo.completed
+const toggleCompleted = (item) => {
+  const todo = todos.value.find((todo) => todo.id === item.id)
+  todo.completed = item.completed
+  saveTodos()
 }
 
 const changeFilter = (filter) => {
@@ -33,6 +35,7 @@ const changeFilter = (filter) => {
 
 const removeTodo = (id) => {
   todos.value = todos.value.filter((todo) => todo.id !== id)
+  saveTodos()
 }
 
 const removeAllCompleted = () => {
@@ -80,16 +83,21 @@ const formatDate = (date) => {
 <template>
   <HeaderLayout :title="TODO" />
   <InputContainer @add-todo="addTodo" />
-  <FilterContainer @change-filter="changeFilter" />
+  <FilterContainer @change-filter="changeFilter" :filterOption="filterOption" />
   <ul class="todo-list">
     <TodoItem
       v-for="todo in filteredTodos"
       :key="todo.id"
       :todo="todo"
       @toggle-completed="toggleCompleted"
+      @remove-todo="removeTodo"
     />
   </ul>
-  <SummaryContainer @remove-all-completed="removeAllCompleted" :activeTodoCount="activeTodoCount" :completedTodoCount="completedTodoCount" />
+  <SummaryContainer
+    @remove-all-completed="removeAllCompleted"
+    :activeTodoCount="activeTodoCount"
+    :completedTodoCount="completedTodoCount"
+  />
 </template>
 
 <style scoped></style>
